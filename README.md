@@ -1,10 +1,10 @@
 ---
 
-# 🎮 Final Project Pemrograman Jaringan - Kelompok 19: **Hangman Multiplayer**
+# Final Project Pemrograman Jaringan - Kelompok 19: **Hangman Multiplayer**
 
 ---
 
-## 👥 Anggota Kelompok
+## Anggota Kelompok
 
 | Nama                              | NRP        |
 | --------------------------------- | ---------- |
@@ -15,7 +15,7 @@
 
 ---
 
-## 📝 Deskripsi
+## Deskripsi
 
 Aplikasi ini merupakan implementasi permainan **Hangman** klasik dalam versi **multiplayer** berbasis jaringan. Dua pemain dapat bergabung ke dalam satu kamar untuk saling bersaing menebak kata bertema **merek mobil terkenal** yang dipilih secara acak oleh server.
 
@@ -29,7 +29,7 @@ Aplikasi ini terdiri dari dua komponen utama:
 
 ---
 
-## 🧭 Alur Aplikasi & Antarmuka Pengguna
+## Alur Aplikasi & Antarmuka Pengguna
 
 ### 1. Menu Utama
 
@@ -98,7 +98,7 @@ Pada akhir permainan, kata yang benar ditampilkan dan pemain bisa memilih opsi *
 
 ---
 
-## 🛰️ Definisi Protokol
+## Definisi Protokol
 
 Komunikasi dilakukan melalui **TCP/IP** dengan format pesan **JSON**, diakhiri newline (`\n`).
 
@@ -112,7 +112,7 @@ Komunikasi dilakukan melalui **TCP/IP** dengan format pesan **JSON**, diakhiri n
 {"command": "guess", "letter": "A"}
 ```
 
-### 📡 Server → Client
+### Server → Client
 
 * **assign\_id**
 
@@ -148,21 +148,21 @@ Komunikasi dilakukan melalui **TCP/IP** dengan format pesan **JSON**, diakhiri n
 
 ---
 
-## 🧱 Arsitektur
+## Arsitektur
 
-### 🌐 IP Address
+### IP Address
 
 * **Server:** `0.0.0.0` – Mendengarkan semua koneksi jaringan.
 * **Client:** Default `127.0.0.1` (localhost), bisa diubah di dalam kode.
 
-### 🔌 Port
+### Port
 
 * Default menggunakan **port 9999** untuk koneksi TCP.
 * Bisa dikustomisasi melalui argumen saat menjalankan server.
 
 ---
 
-## 📁 Repository
+## Repository
 
 🔗 [Klik di sini untuk mengakses repository](https://github.com/arizki787/final_progjar.git)
 
