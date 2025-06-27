@@ -1,6 +1,6 @@
 ---
 
-# Final Project Pemrograman Jaringan - Kelompok 19: **Hangman Multiplayer**
+# Final Project Pemrograman Jaringan - Kelompok 16: **Hangman Multiplayer**
 
 ---
 
