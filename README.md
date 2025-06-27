@@ -15,6 +15,7 @@
 
 ---
 
+
 ## Deskripsi
 
 Aplikasi ini merupakan implementasi permainan **Hangman** klasik dalam versi **multiplayer** berbasis jaringan. Dua pemain dapat bergabung ke dalam satu kamar untuk saling bersaing menebak kata bertema **merek mobil terkenal** yang dipilih secara acak oleh server.
