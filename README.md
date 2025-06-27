@@ -40,9 +40,9 @@ Pemain akan melihat tampilan awal dengan dua opsi:
 
 Di bagian bawah, terdapat instruksi dasar permainan.
 
-📷 *Tampilan Menu Awal:*
-![MENUAWAL](https://github.com/user-attachments/assets/6de45a04-bcc3-42fd-8a6b-d65c52434f88)
 *Gambar 1: Menu Utama*
+![MENUAWAL](https://github.com/user-attachments/assets/6de45a04-bcc3-42fd-8a6b-d65c52434f88)
+
 
 ---
 
@@ -53,13 +53,13 @@ Setelah memilih opsi, pemain akan memasukkan **nama kamar**.
 * **Buat Kamar:** Membuat kamar baru.
 * **Gabung Kamar:** Terhubung ke kamar yang sudah dibuat.
 
-📷 *Buat Kamar:*
-![BUATKAMAR](https://github.com/user-attachments/assets/854fa81d-64d8-4781-8dd2-5d6852899966)
 *Gambar 2: Buat Kamar*
+![BUATKAMAR](https://github.com/user-attachments/assets/854fa81d-64d8-4781-8dd2-5d6852899966)
 
-📷 *Gabung Kamar:*
-![GABUNGKAMAR](https://github.com/user-attachments/assets/d1b4070f-9780-4a75-ad42-1079819a0576)
+
 *Gambar 3: Gabung Kamar*
+![GABUNGKAMAR](https://github.com/user-attachments/assets/d1b4070f-9780-4a75-ad42-1079819a0576)
+
 
 ---
 
@@ -86,13 +86,13 @@ Permainan selesai jika:
 * Kata berhasil ditebak oleh salah satu pemain
 * Pemain kehabisan nyawa
 
-📷 *Menang:*
-![WIN](https://github.com/user-attachments/assets/bac7b21e-06fa-4fdb-b6a4-cb4e487b2e81)
 *Gambar 4: Pemain Menang*
+![WIN](https://github.com/user-attachments/assets/bac7b21e-06fa-4fdb-b6a4-cb4e487b2e81)
 
-📷 *Kalah:*
-![LOSE](https://github.com/user-attachments/assets/77b181a6-80eb-466c-9c9fd8f330a7)
+
 *Gambar 5: Pemain Kalah*
+![LOSE](https://github.com/user-attachments/assets/9c52a1be-1228-4d9e-b4a1-b5162198b05a)
+
 
 Pada akhir permainan, kata yang benar ditampilkan dan pemain bisa memilih opsi **Main Lagi**.
 
