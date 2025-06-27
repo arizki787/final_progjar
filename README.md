@@ -1,5 +1,3 @@
-Tentu, berikut adalah `README.md` yang telah diformat dengan rapi. Anda bisa langsung menyalin dan menempelkannya ke GitHub.
-
 -----
 
 # **Final Project Pemrograman Jaringan KELOMPOK 19: Hangman Multiplayer**
