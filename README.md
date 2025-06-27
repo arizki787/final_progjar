@@ -10,8 +10,8 @@
 | --------------------------------- | ---------- |
 | Roofiif Alria Dzakwan             | 5025221012 |
 | Maruli Gilbert Cristopel Hutagaol | 5025221119 |
-| Muhammad Rafi Budi Purnama        | 5025221307 |
 | Aditya Rizki Muhammad             | 5025221272 |
+| Muhammad Rafi Budi Purnama        | 5025221307 |
 
 ---
 
