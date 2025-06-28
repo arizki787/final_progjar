@@ -10,161 +10,90 @@
 | --------------------------------- | ---------- |
 | Roofiif Alria Dzakwan             | 5025221012 |
 | Maruli Gilbert Cristopel Hutagaol | 5025221119 |
-| Aditya Rizki Muhammad             | 5025221272 |
 | Muhammad Rafi Budi Purnama        | 5025221307 |
+| Aditya Rizki Muhammad             | 5025221272 |
 
 ---
-
 
 ## Deskripsi
+Proyek ini adalah adaptasi dari server hangman multiplayer (`27server.py`) ke dalam arsitektur HTTP server yang sudah ada (`http.py` dan `server_thread_http.py`). Server yang dihasilkan dapat melayani **dua jenis koneksi**:
 
-Aplikasi ini merupakan implementasi permainan **Hangman** klasik dalam versi **multiplayer** berbasis jaringan. Dua pemain dapat bergabung ke dalam satu kamar untuk saling bersaing menebak kata bertema **merek mobil terkenal** yang dipilih secara acak oleh server.
+1. **HTTP Requests** - untuk web browser atau HTTP clients
+2. **JSON Game Protocol** - untuk pygame client (`client_pygame.py`)
 
-Aplikasi ini terdiri dari dua komponen utama:
+## Struktur File
 
-* **Server (`27server.py`)**
-  Bertugas mengatur alur permainan, mengelola koneksi client, membuat kamar, memilih kata secara acak, memvalidasi tebakan, mengatur giliran, menghitung nyawa, serta menentukan pemenang. Menggunakan modul `threading`, server mampu menangani banyak kamar secara bersamaan.
+### File Yang Dimodifikasi:
 
-* **Client (`client_pygame.py`)**
-  Antarmuka grafis berbasis **Pygame** yang digunakan pemain untuk membuat/bergabung ke kamar dan bermain. Menampilkan visual hangman, kata yang ditebak, giliran bermain, serta input huruf secara interaktif.
+#### 1. `http.py`
+- **Ditambahkan**: 
+  - Import tambahan: `json`, `random`, `threading`
+  - Konstanta `CAR_BRANDS` untuk daftar merk mobil
+  - Global variables `game_rooms` dan `room_lock` untuk manajemen game
+  - Method `process_json_message()` untuk menangani pesan JSON dari pygame client
+  - Method `handle_join_command()` untuk menangani perintah join room
+  - Method `handle_guess_command()` untuk menangani perintah tebak huruf
+  - Method `get_game_state_message()` untuk membuat pesan status game
+  - Support untuk tipe MIME `application/json`
 
----
+#### 2. `server_thread_http.py`
+- **Ditambahkan**:
+  - Import `json` untuk parsing JSON messages
+  - Deteksi otomatis jenis koneksi (HTTP vs JSON)
+  - Method `broadcast_to_room_players()` untuk broadcast pesan ke semua player di room
+  - Method `cleanup_client()` untuk membersihkan client yang disconnect
+  - Port default diubah ke 9999 (sama dengan `27server.py`)
+  - Improved error handling dan logging
 
-## Alur Aplikasi & Antarmuka Pengguna
+## Protokol Komunikasi
 
-### 1. Menu Utama
-
-Pemain akan melihat tampilan awal dengan dua opsi:
-
-* **Buat Kamar** – Membuat ruang permainan baru.
-* **Gabung Kamar** – Masuk ke kamar yang sudah ada.
-
-Di bagian bawah, terdapat instruksi dasar permainan.
-
-*Gambar 1: Menu Utama*
-![MENUAWAL](https://github.com/user-attachments/assets/6de45a04-bcc3-42fd-8a6b-d65c52434f88)
-
-
----
-
-### 2. Membuat dan Bergabung Kamar
-
-Setelah memilih opsi, pemain akan memasukkan **nama kamar**.
-
-* **Buat Kamar:** Membuat kamar baru.
-* **Gabung Kamar:** Terhubung ke kamar yang sudah dibuat.
-
-*Gambar 2: Buat Kamar*
-![BUATKAMAR](https://github.com/user-attachments/assets/854fa81d-64d8-4781-8dd2-5d6852899966)
-
-
-*Gambar 3: Gabung Kamar*
-![GABUNGKAMAR](https://github.com/user-attachments/assets/d1b4070f-9780-4a75-ad42-1079819a0576)
-
-
----
-
-### 3. Fase Permainan
-
-Jika pemain pertama sudah masuk kamar, layar akan menampilkan status *Menunggu Pemain Kedua*. Setelah dua pemain masuk, permainan dimulai.
-
-Elemen yang ditampilkan:
-
-* Visualisasi hangman
-* Kata dengan garis bawah (`_`)
-* Sisa nyawa
-* Huruf-huruf yang sudah ditebak
-* Giliran pemain
-
-Pemain dapat menebak **satu huruf** di gilirannya.
-
----
-
-### 4. Akhir Permainan
-
-Permainan selesai jika:
-
-* Kata berhasil ditebak oleh salah satu pemain
-* Pemain kehabisan nyawa
-
-*Gambar 4: Pemain Menang*
-![WIN](https://github.com/user-attachments/assets/bac7b21e-06fa-4fdb-b6a4-cb4e487b2e81)
-
-
-*Gambar 5: Pemain Kalah*
-![LOSE](https://github.com/user-attachments/assets/9c52a1be-1228-4d9e-b4a1-b5162198b05a)
-
-
-Pada akhir permainan, kata yang benar ditampilkan dan pemain bisa memilih opsi **Main Lagi**.
-
----
-
-## Definisi Protokol
-
-Komunikasi dilakukan melalui **TCP/IP** dengan format pesan **JSON**, diakhiri newline (`\n`).
-
-### 🔁 Client → Server
-
+### JSON Protocol (untuk pygame client):
 ```json
-{"command": "join", "room": "nama_kamar"}
-```
+// Join room
+{"command": "join", "room": "room_name"}
 
-```json
+// Guess letter
 {"command": "guess", "letter": "A"}
+
+// Response messages
+{"type": "assign_id", "id": 0}
+{"type": "info", "message": "Menunggu pemain kedua..."}
+{"type": "game_update", "display": "T O _ O T A", "guessed": "ATO", "lives": 6, "turn": 1, "players_count": 2, "clue": "Merk Mobil"}
+{"type": "game_over", "message": "🎉 PEMAIN 0 MENANG! 🎉\nKata: TOYOTA\nPemain 0 menebak huruf terakhir!"}
 ```
 
-### Server → Client
+### HTTP Protocol (untuk web browser):
+- Menggunakan standard HTTP methods (GET, POST)
+- Mendukung serving static files
+- Backward compatible dengan fungsi HTTP yang sudah ada
 
-* **assign\_id**
+## Cara Menjalankan
 
-  ```json
-  {"type": "assign_id", "id": 0}
-  ```
+### 1. Menjalankan Server
+```bash
+python server_thread_http.py [port]
+```
+- Port default: 9999
+- Server akan mendengarkan di `0.0.0.0:9999`
 
-* **info / error**
+### 2. Menjalankan Client Pygame
+```bash
+python client_pygame.py
+```
+- Client akan terhubung ke `127.0.0.1:9999`
+- Mendukung GUI untuk bermain hangman multiplayer
 
-  ```json
-  {"type": "info", "message": "Menunggu pemain kedua..."}
-  ```
+## Fitur Game
 
-* **game\_update**
+### Aturan Permainan:
+1. **Maksimal 2 pemain** per room
+2. **Auto-start** ketika 2 pemain bergabung
+3. **Bergantian** menebak huruf
+4. **6 nyawa** untuk setiap game
+5. **Tema**: Merk mobil (35 merk tersedia)
 
-  ```json
-  {
-    "type": "game_update",
-    "display": "_ _ _ _",
-    "guessed": "AEI",
-    "lives": 5,
-    "turn": 1,
-    "players_count": 2,
-    "clue": "Merk Mobil"
-  }
-  ```
+### Kondisi Menang/Kalah:
+- **Menang**: Menebak huruf terakhir yang melengkapi kata
+- **Kalah**: Melengkapi gambar hangman (nyawa habis)
 
-* **game\_over**
-
-  ```json
-  {"type": "game_over", "message": "PEMAIN 0 MENANG! Kata: HONDA"}
-  ```
-
----
-
-## Arsitektur
-
-### IP Address
-
-* **Server:** `0.0.0.0` – Mendengarkan semua koneksi jaringan.
-* **Client:** Default `127.0.0.1` (localhost), bisa diubah di dalam kode.
-
-### Port
-
-* Default menggunakan **port 9999** untuk koneksi TCP.
-* Bisa dikustomisasi melalui argumen saat menjalankan server.
-
----
-
-## Repository
-
-🔗 [Klik di sini untuk mengakses repository](https://github.com/arizki787/final_progjar.git)
-
----
+## Contoh Penggunaan
