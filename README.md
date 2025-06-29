@@ -97,3 +97,11 @@ python client_pygame.py
 - **Kalah**: Melengkapi gambar hangman (nyawa habis)
 
 ## Contoh Penggunaan
+**Menu Utama**:
+![Screenshot 2025-06-29 205322](https://github.com/user-attachments/assets/4440bba6-0e6c-4ac2-917b-52ac81700dc3)
+**Menu Buat Kamar/Game Room**
+![Screenshot 2025-06-29 205332](https://github.com/user-attachments/assets/d6b27843-3290-4e93-97db-8ed53a253d3e)
+**Tampilan In Game**
+![Screenshot 2025-06-29 205406](https://github.com/user-attachments/assets/954eb2ee-3299-406e-991e-b85453fac228)
+**Tampilan Hasil Permainan**
+![Screenshot 2025-06-29 205553](https://github.com/user-attachments/assets/9d3880f7-11c1-45b6-a8b7-3d005afa8ee3)
