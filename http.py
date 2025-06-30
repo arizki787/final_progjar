@@ -60,6 +60,16 @@ class HttpServer:
 		messages_to_send = []
 		
 		with room_lock:
+			# First, remove this client from any existing rooms (cleanup from previous connections)
+			for existing_room_name, existing_room_data in list(game_rooms.items()):
+				if client_socket in existing_room_data.get('players', []):
+					existing_room_data['players'].remove(client_socket)
+					print(f"[CLEANUP] Removed client from previous room '{existing_room_name}'")
+					# If room becomes empty, remove it
+					if len(existing_room_data['players']) == 0:
+						del game_rooms[existing_room_name]
+						print(f"[CLEANUP] Removed empty room '{existing_room_name}'")
+			
 			if room_name not in game_rooms:
 				game_rooms[room_name] = {
 					'word': None, 'guessed': set(), 'display': '', 'lives': 6,

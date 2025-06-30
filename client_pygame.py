@@ -90,10 +90,26 @@ class HangmanClient:
         
     def connect_to_server(self, host="127.0.0.1", port=9999):
         try:
+            # Clean up any existing connection first
+            if self.client_socket:
+                try:
+                    self.client_socket.close()
+                except:
+                    pass
+                self.client_socket = None
+            
+            # Wait for any existing network thread to finish
+            if self.network_thread and self.network_thread.is_alive():
+                try:
+                    self.network_thread.join(timeout=1.0)
+                except:
+                    pass
+            
+            # Create new connection
             self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.client_socket.connect((host, port))
             
-            # Start network thread
+            # Start new network thread
             self.network_thread = threading.Thread(target=self.receive_messages, daemon=True)
             self.network_thread.start()
             return True
@@ -103,7 +119,7 @@ class HangmanClient:
     
     def receive_messages(self):
         buffer = ""
-        while self.game_is_active:
+        while self.game_is_active and self.client_socket:
             try:
                 message = self.client_socket.recv(1024).decode('utf-8')
                 if not message:
@@ -124,8 +140,11 @@ class HangmanClient:
                             
             except Exception as e:
                 print(f"Connection error: {e}")
-                self.game_is_active = False
+                # Don't set game_is_active to False here, just break the loop
+                # This allows the main game loop to continue running
                 break
+        
+        print("Network thread ended")
     
     def process_message(self, data):
         try:
@@ -200,14 +219,22 @@ class HangmanClient:
     
     def send_join_room(self, room_name):
         if self.client_socket:
-            message = json.dumps({'command': 'join', 'room': room_name})
-            self.client_socket.send(message.encode('utf-8'))
+            try:
+                message = json.dumps({'command': 'join', 'room': room_name})
+                self.client_socket.send(message.encode('utf-8'))
+            except Exception as e:
+                print(f"Error sending join room: {e}")
+                self.message = "Gagal mengirim permintaan ke server!"
     
     def send_guess(self, letter):
         if self.client_socket and self.is_my_turn:
-            message = json.dumps({'command': 'guess', 'letter': letter})
-            self.client_socket.send(message.encode('utf-8'))
-            self.waiting_for_input = False
+            try:
+                message = json.dumps({'command': 'guess', 'letter': letter})
+                self.client_socket.send(message.encode('utf-8'))
+                self.waiting_for_input = False
+            except Exception as e:
+                print(f"Error sending guess: {e}")
+                self.message = "Gagal mengirim tebakan ke server!"
     
     def draw_button(self, text, x, y, width, height, color=LIGHT_GRAY, text_color=BLACK):
         pygame.draw.rect(self.screen, color, (x, y, width, height))
@@ -427,6 +454,25 @@ class HangmanClient:
         return menu_btn
     
     def reset_game(self):
+        # First, properly close the existing connection
+        if self.client_socket:
+            try:
+                self.client_socket.close()
+            except:
+                pass
+            self.client_socket = None
+        
+        # Wait a moment for the network thread to finish
+        if self.network_thread and self.network_thread.is_alive():
+            try:
+                self.network_thread.join(timeout=1.0)
+            except:
+                pass
+        
+        # Small delay to ensure clean disconnection
+        time.sleep(0.5)
+        
+        # Reset all game state
         self.state = STATE_MENU
         self.is_my_turn = False
         self.my_player_id = -1
@@ -440,10 +486,10 @@ class HangmanClient:
         self.is_winner = False
         self.final_word = ""
         self.input_text = ""
+        self.input_active = False
         
-        if self.client_socket:
-            self.client_socket.close()
-            self.client_socket = None
+        # Reset network thread reference
+        self.network_thread = None
     
     def run(self):
         running = True
